@@ -1,7 +1,16 @@
 filetype off
 call plug#begin()
 
-" File navigation
+" Buffer deletion
+Plug 'Asheq/close-buffers.vim'
+
+" Airline
+Plug 'vim-airline/vim-airline'
+
+" Advanced File navigation
+Plug 'nvim-tree/nvim-tree.lua'
+
+" Simple File navigation
 Plug 'tamago324/lir.nvim'
 Plug 'tamago324/lir-git-status.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
@@ -23,9 +32,6 @@ Plug 'tribela/vim-transparent'
 
 " Coments support for vim
 Plug 'tpope/vim-commentary'
-
-" Airline layout
-Plug 'vim-airline/vim-airline'
 
 " REPL for languages
 Plug 'jpalardy/vim-slime'
@@ -56,75 +62,79 @@ Plug 'folke/todo-comments.nvim'
 
 " Telsecope nvim
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.4' }
 
-" Telescope coc plugin to show results of coc in telegraf
+" Telescope coc plugin
 Plug 'fannheyward/telescope-coc.nvim'
 
 call plug#end()
 
+"Lua plugins config
+lua require('illiahalchun.todo')
+" lua require('illiahalchun.telescope')
+lua require('illiahalchun.nvim-tree')
+" lua require('illiahalchun.lir-nvim')
+
 " Smart Tab
-set smartindent
+set autoindent
 set tabstop=4
 set shiftwidth=4
+set softtabstop=4
 set smarttab
 set expandtab
 
 " Update time
 set updatetime=500
+
+" Theme
 colorscheme gruvbox
 set background=dark
 set termguicolors
 let g:airline_theme='falcon'
-
 syntax enable
+
+" Terminal colors
+set t_Co=256
+
+" File type detection
 filetype plugin indent on
-set encoding=UTF-8
+
+" Text
+set encoding=utf-8
 set textwidth=80
-
-let g:slime_target = "kitty"
-
-set backspace=indent,eol,start whichwrap+=<,>,[,]
-
+set nobackup
+set noswapfile
+set fileencodings=utf8,cp1251
 set wrap
 set linebreak
 
-set nobackup
-set noswapfile
-set encoding=utf-8
-set fileencodings=utf8,cp1251
+" Backspace
+set backspace=indent,eol,start whichwrap+=<,>,[,]
 
-set clipboard=unnamed
+" Ruller
 set ruler
-
-"Turn off visualbell
-set visualbell t_vb=
-
-nnoremap<leader><Right> tabn<cr>
-
-set nu
 set number relativenumber
+
+" Turn off visualbell
+set visualbell t_vb=
+set novisualbell
+
+" Clipboard
+set clipboard+=unnamedplus
+
+" Mouse
 set mousehide
 set mouse=a
-set termencoding=utf-8
-set novisualbell
-set autoindent
 
-set tabstop=4
-set shiftwidth=4
-set smarttab
-set expandtab
-set softtabstop=4
-
-set t_Co=256
-
+" Leader
 let mapleader = " "
 
-" create new tabs
+" Create new tabs
 nnoremap <leader>t :tabnew<Enter>
+
 " Close all except current tab
 nnoremap <leader>\ :tabonly<Enter>
-nnoremap <F1> :buffers<CR>:buffer<Space>
+
 " Navigating tabs
 nnoremap <leader>1 1gt
 nnoremap <leader>2 2gt
@@ -135,12 +145,13 @@ nnoremap <leader>6 6gt
 nnoremap <leader>7 7gt
 nnoremap <leader>8 8gt
 nnoremap <leader>9 9gt
+
 " Previous and next window
 nnoremap <leader>] gt
 nnoremap <leader>[ gT
 
 " Coc extensions
-let g:coc_global_extensions = ['coc-pairs', 'coc-eslint', 'coc-json', 'coc-highlight', 'coc-tsserver', 'coc-snippets', 'coc-html-css-support', 'coc-cssmodules', 'coc-css', 'coc-html', 'coc-yaml', 'coc-prettier']
+let g:coc_global_extensions = ['coc-pairs', 'coc-eslint', 'coc-json', 'coc-highlight', 'coc-tsserver', 'coc-snippets', 'coc-cssmodules', 'coc-css', 'coc-html', 'coc-yaml', 'coc-prettier', 'coc-rust-analyzer']
 
 " Window menegment
 nnoremap <leader>h <C-w>h
@@ -151,18 +162,22 @@ nnoremap <leader>j <C-w>j
 " Close tab and delete buffer
 nnoremap <leader>d :bd<CR>
 
-inoremap <silent><expr> <tab> coc#refresh()
+" Enter new line
+nmap <Enter> :a<CR><CR>.<CR>
 
-" Saves
-noremap <silent> <D-S>          :w<CR>
-vnoremap <silent> <D-S>         <C-C>:w<CR>
-inoremap <silent> <D-S>         <C-O>:w<CR>
-
-nmap <CR> :a<CR><CR>.<CR>
+" Code navigation
+nnoremap <C-k> 10k 
+nnoremap <C-j> 10j 
+nnoremap <C-l> 10l 
+nnoremap <C-h> 10h 
+nnoremap > $
+nnoremap < 0
 
 " Remap Esc
 :imap qq <Esc>
 :imap QQ <Esc>
+:xmap qq <Esc>
+:xmap QQ <Esc>
 
 " Airline Options
 let g:Powerline_symbols='unicode'
@@ -186,6 +201,7 @@ function! CheckBackspace() abort
     return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
+" Code complition on Tab key 
 inoremap <silent><expr> <Tab>
             \ coc#pum#visible() ? coc#pum#next(1) :
             \ CheckBackspace() ? "\<Tab>" :
@@ -194,45 +210,31 @@ inoremap <silent><expr> <Tab>
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
-" Remap Endline StartLine
-nnoremap > $
-nnoremap < 0
-
 "Buffer deleteng
-command! BufCurOnly execute '%bdelete|edit#|bdelete#'
-nnoremap <leader>cb :BufCurOnly<CR>
+nnoremap <leader>cb :silent! Bdelete menu<CR>
 
 " Telescope
-nnoremap ff <cmd>Telescope find_files<cr>
-nnoremap fg <cmd>Telescope live_grep<cr>
-nnoremap fb <cmd>Telescope buffers<cr>
+nnoremap ff <cmd>Telescope find_files<CR>
+nnoremap fg <cmd>Telescope live_grep<CR>
+nnoremap fb <cmd>Telescope buffers<CR>
 
 " Coc preview
-nnoremap <leader><leader> :<C-U>call CocAction('doHover')<CR>
+nnoremap <leader><leader> :silent! call CocAction('doHover')<CR>
 
-" Neo-tree setup
-function! s:show_documentation()
-    if (index(['vim','help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
-    else
-        call CocAction('doHover')
-    endif
-endfunction
-
-" Remap keys for applying codeAction to the current line.
+" Remap keys for applying codeAction to the current line
 nmap <leader>ac  <Plug>(coc-codeaction)
 
-" Apply AutoFix to problem on the current line.
+" Apply AutoFix to problem on the current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 
-" GoTo code navigation.
+" Go to code navigation
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gt <Plug>(coc-type-definition)
 nmap <silent> gi :Telescope coc implementations <CR>
 nmap <silent> gr :Telescope coc references <CR>
 
-" Neo-tree setup
-nnoremap <silent> <leader>f :lua require'lir.float'.toggle()<CR>
+" Nvim-tree setup
+nnoremap <silent> <leader>f :NvimTreeFocus<CR>
 
 " Todo Manager setup
 nnoremap td :TodoTelescope<Enter>
@@ -245,7 +247,3 @@ let g:tagbar_map_showproto = ''
 let g:tagbar_autoclose_netrw = 1
 let g:tagbar_autofocus = 1
 
-"Lua plugins config
-lua require('illiahalchun.todo')
-lua require('illiahalchun.telescope')
-lua require('illiahalchun.lir-nvim')
