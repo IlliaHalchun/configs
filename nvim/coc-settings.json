@@ -1,12 +1,8 @@
 {
-    //"eslint.autoFixOnSave": "true",
-    "diagnostic.checkCurrentLine": true,
-    "diagnostic.virtualTextCurrentLineOnly": false,
-    "languageserver": {
-        "csharp-ls": {
-            "command": "~/Documents/GitProgramms/csharp-language-server/src/CSharpLanguageServer/bin/Debug/net7.0/CSharpLanguageServer",
-            "filetypes": ["cs"],
-            "rootPatterns": ["*.csproj", ".vim/", ".git/", ".hg/"]
-        }
-    }
+  "eslint.autoFixOnSave": true,
+  "diagnostic.checkCurrentLine": true,
+  "diagnostic.virtualTextCurrentLineOnly": false,
+  "snippets.ultisnips.pythonPrompt": false,
+  "tsserver.useLocalTsdk": true,
+  "coc.preferences.formatOnSaveFiletypes": ["*"]
 }
