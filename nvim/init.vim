@@ -1,6 +1,9 @@
 filetype off
 call plug#begin()
 
+" Session handling
+Plug 'rmagatti/auto-session'
+
 " Buffer deletion
 Plug 'Asheq/close-buffers.vim'
 
@@ -71,9 +74,9 @@ call plug#end()
 
 "Lua plugins config
 lua require('illiahalchun.todo')
-" lua require('illiahalchun.telescope')
+lua require('illiahalchun.telescope')
 lua require('illiahalchun.nvim-tree')
-" lua require('illiahalchun.lir-nvim')
+lua require('illiahalchun.auto-session')
 
 " Smart Tab
 set autoindent
@@ -110,6 +113,9 @@ set linebreak
 
 " Backspace
 set backspace=indent,eol,start whichwrap+=<,>,[,]
+
+" Update time
+set updatetime=300
 
 " Ruller
 set ruler
@@ -159,17 +165,30 @@ nnoremap <leader>l <C-w>l
 nnoremap <leader>k <C-w>k
 nnoremap <leader>j <C-w>j
 
-" Close tab and delete buffer
-nnoremap <leader>d :bd<CR>
+tnoremap <leader>h <C-\><C-N><C-w>h
+tnoremap <leader>j <C-\><C-N><C-w>j
+tnoremap <leader>k <C-\><C-N><C-w>k
+tnoremap <leader>l <C-\><C-N><C-w>l
+
+nnoremap <leader>x :vsplit<CR>
+nnoremap <leader>y :split<CR>
+
+nnoremap <A-k> <C-w>+
+nnoremap <A-j> <C-w>-
+nnoremap <A-l> <C-w>>
+nnoremap <A-h> <C-w><
+
+" Close window
+nnoremap <leader>d :close!<CR>
 
 " Enter new line
 nmap <Enter> :a<CR><CR>.<CR>
 
 " Code navigation
-nnoremap <C-k> 10k 
-nnoremap <C-j> 10j 
-nnoremap <C-l> 10l 
-nnoremap <C-h> 10h 
+nnoremap <S-k> 10k 
+nnoremap <S-j> 10j 
+nnoremap <S-l> 10l 
+nnoremap <S-h> 10h 
 nnoremap > $
 nnoremap < 0
 
@@ -188,6 +207,7 @@ let g:airline#extensions#xkblayout#enabled = 0
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#xkblayout#enabled = 0
+let g:airline#extensions#tabline#show_buffers = 0
 
 " JS/TS Syntaxis
 let g:typescript_indent_disable = 1
@@ -211,27 +231,37 @@ inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 "Buffer deleteng
-nnoremap <leader>cb :silent! Bdelete menu<CR>
+nnoremap cb :silent! Bdelete menu<CR>
 
 " Telescope
 nnoremap ff <cmd>Telescope find_files<CR>
 nnoremap fg <cmd>Telescope live_grep<CR>
 nnoremap fb <cmd>Telescope buffers<CR>
+nnoremap fp <cmd>Telescope jumplist<CR>
+
+" Git
+nnoremap fgs :silent! Telescope git_status<CR>
+nnoremap fgc :silent! Telescope git_commits<CR>
+nnoremap fgb :silent! Telescope git_branches<CR>
 
 " Coc preview
 nnoremap <leader><leader> :silent! call CocAction('doHover')<CR>
 
 " Remap keys for applying codeAction to the current line
-nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>a  <Plug>(coc-codeaction)
 
 " Apply AutoFix to problem on the current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>q  <Plug>(coc-fix-current)
 
 " Go to code navigation
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gt <Plug>(coc-type-definition)
 nmap <silent> gi :Telescope coc implementations <CR>
-nmap <silent> gr :Telescope coc references <CR>
+nmap <silent> gu :Telescope coc references <CR>
+nmap <leader>q :silent! call CocAction('doHover')<CR>
+
+nmap <silent> gp <C-o>
+nmap <silent> gn <C-i>
 
 " Nvim-tree setup
 nnoremap <silent> <leader>f :NvimTreeFocus<CR>
@@ -247,3 +277,8 @@ let g:tagbar_map_showproto = ''
 let g:tagbar_autoclose_netrw = 1
 let g:tagbar_autofocus = 1
 
+" Redo mapping
+nnoremap U <C-r>
+
+" Terminal handling
+tnoremap qq <C-\><C-n>

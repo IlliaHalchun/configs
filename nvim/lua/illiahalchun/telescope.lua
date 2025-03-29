@@ -4,10 +4,12 @@ local actions = require("telescope.actions");
 telescope.setup({
     defaults = {
         mappings = {
-            i = {
-                ["<esc>"] = actions.close
-            },
-        },
+            n = {
+                ["qq"] = actions.close,
+                ["t"] = actions.select_tab,
+                ["o"] = actions.select_default,
+            }
+        }
     },
     extensions = {
         coc = {
@@ -15,3 +17,4 @@ telescope.setup({
         }
     }
 });
+
