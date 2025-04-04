@@ -1,6 +1,9 @@
 filetype off
 call plug#begin()
 
+" Greeter
+Plug 'goolord/alpha-nvim'
+
 " Session handling
 Plug 'rmagatti/auto-session'
 
@@ -63,8 +66,10 @@ Plug 'nvim-treesitter/nvim-treesitter'
 " Todo handling for vim
 Plug 'folke/todo-comments.nvim'
 
-" Telsecope nvim
+" Some lua helpers for other plugins
 Plug 'nvim-lua/plenary.nvim'
+
+" Telsecope nvim
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.4' }
 
 " Telescope coc plugin
@@ -73,10 +78,11 @@ Plug 'fannheyward/telescope-coc.nvim'
 call plug#end()
 
 "Lua plugins config
-lua require('illiahalchun.todo')
-lua require('illiahalchun.telescope')
-lua require('illiahalchun.nvim-tree')
-lua require('illiahalchun.auto-session')
+lua require('plugins.todo')
+lua require('plugins.telescope')
+lua require('plugins.nvim-tree')
+lua require('plugins.auto-session')
+lua require('plugins.alpha-nvim')
 
 " Smart Tab
 set autoindent
@@ -189,8 +195,17 @@ nnoremap <S-k> 10k
 nnoremap <S-j> 10j 
 nnoremap <S-l> 10l 
 nnoremap <S-h> 10h 
+
+vnoremap <S-k> 10k 
+vnoremap <S-j> 10j 
+vnoremap <S-l> 10l 
+vnoremap <S-h> 10h 
+
 nnoremap > $
 nnoremap < 0
+
+vnoremap > $
+vnoremap < 0
 
 " Remap Esc
 :imap qq <Esc>
@@ -264,10 +279,10 @@ nmap <silent> gp <C-o>
 nmap <silent> gn <C-i>
 
 " Nvim-tree setup
-nnoremap <silent> <leader>f :NvimTreeFocus<CR>
+nnoremap <silent> <leader>f :NvimTreeFindFile<CR>
 
 " Todo Manager setup
-nnoremap td :TodoTelescope<Enter>
+nnoremap ftd :TodoTelescope<Enter>
 
 " Tagbar setup
 nnoremap tb :TagbarToggle<Enter>
@@ -282,3 +297,9 @@ nnoremap U <C-r>
 
 " Terminal handling
 tnoremap qq <C-\><C-n>
+
+" Session handling
+nnoremap fs :SessionSearch<CR>
+
+" Word deletion
+inoremap <C-Backspace> <C-W>

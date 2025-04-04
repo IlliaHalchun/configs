@@ -20,16 +20,10 @@ local function my_on_attach(bufnr)
     vim.keymap.set('n', 't', api.node.open.tab, opts('Open in new tab'))
     vim.keymap.set('n', '/', api.tree.search_node, opts('Search'))
     vim.keymap.set('n', '.', api.tree.toggle_hidden_filter , opts('Hidden files toggle'))
-
-    -- auto close on last window
-    vim.api.nvim_create_autocmd("BufEnter", {
-        nested = true,
-        callback = function()
-            if #vim.api.nvim_list_wins() == 1 and vim.api.nvim_buf_get_name(0):match("NvimTree_") ~= nil then
-                vim.cmd "quit"
-            end
-        end
-    })
+    vim.keymap.set('n', '<S-j>', function() vim.cmd("norm! 10j") end, opts('Move down 10 lines'))
+    vim.keymap.set('n', '<S-k>', function() vim.cmd("norm! 10k") end, opts('Move up 10 lines'))
+    vim.keymap.set('n', 'c', api.tree.collapse_all, opts('Collapse all'))
+    vim.keymap.set('n', 'e', api.tree.expand_all, opts('Expand all'))
 end
 
 -- OR setup with some options
