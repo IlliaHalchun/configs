@@ -3,5 +3,12 @@
   "diagnostic.virtualTextCurrentLineOnly": false,
   "snippets.ultisnips.pythonPrompt": false,
   "tsserver.useLocalTsdk": true,
-  "prettier.enable": true
+  "prettier.enable": true,
+    "languageserver": {
+        "csharp-ls": {
+          "command": "csharp-ls",
+          "filetypes": ["cs"],
+          "rootPatterns": ["*.csproj", ".vim/", ".git/", ".hg/"]
+        }
+    }
 }

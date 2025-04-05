@@ -1,4 +1,3 @@
-filetype off
 call plug#begin()
 
 " Greeter
@@ -33,6 +32,12 @@ Plug 'preservim/tagbar'
 " Python language server
 Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
 
+" Themes
+Plug 'sainnhe/gruvbox-material'
+Plug 'morhetz/gruvbox'
+Plug 'ryanoasis/vim-devicons'
+Plug 'vim-airline/vim-airline-themes'
+
 " Transparent vim
 Plug 'tribela/vim-transparent'
 
@@ -47,15 +52,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " TSX and HTML tag autocompleteon
 Plug 'AndrewRadev/tagalong.vim'
-
-" Themes
-Plug 'sainnhe/gruvbox-material'
-Plug 'tomasr/molokai'
-Plug 'fenetikm/falcon'
-Plug 'morhetz/gruvbox'
-Plug 'ryanoasis/vim-devicons'
-Plug 'lanox/lanox-vim-theme'
-Plug 'vim-airline/vim-airline-themes'
 
 " Linter for JS and TS
 Plug 'MunifTanjim/eslint.nvim'
@@ -75,6 +71,13 @@ Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.4' }
 " Telescope coc plugin
 Plug 'fannheyward/telescope-coc.nvim'
 
+" Search engine
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" Telescope fzf integration
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+
 call plug#end()
 
 "Lua plugins config
@@ -92,14 +95,19 @@ set softtabstop=4
 set smarttab
 set expandtab
 
+" Global status line
+set laststatus=3
+
 " Update time
 set updatetime=500
 
 " Theme
-colorscheme gruvbox
+colorscheme gruvbox-material
 set background=dark
 set termguicolors
-let g:airline_theme='falcon'
+let g:airline_theme='gruvbox_material'
+let g:gruvbox_material_better_performance = 1
+let g:gruvbox_material_transparent_background = 2
 syntax enable
 
 " Terminal colors
@@ -163,7 +171,7 @@ nnoremap <leader>] gt
 nnoremap <leader>[ gT
 
 " Coc extensions
-let g:coc_global_extensions = ['coc-pairs', 'coc-eslint', 'coc-json', 'coc-highlight', 'coc-tsserver', 'coc-snippets', 'coc-cssmodules', 'coc-css', 'coc-html', 'coc-yaml', 'coc-prettier', 'coc-rust-analyzer']
+let g:coc_global_extensions = ['coc-pairs', 'coc-eslint', 'coc-json', 'coc-highlight', 'coc-tsserver', 'coc-snippets', 'coc-cssmodules', 'coc-css', 'coc-html', 'coc-yaml', 'coc-prettier', 'coc-rust-analyzer', 'coc-omnisharp']
 
 " Window menegment
 nnoremap <leader>h <C-w>h
@@ -176,8 +184,8 @@ tnoremap <leader>j <C-\><C-N><C-w>j
 tnoremap <leader>k <C-\><C-N><C-w>k
 tnoremap <leader>l <C-\><C-N><C-w>l
 
-nnoremap <leader>x :vsplit<CR>
-nnoremap <leader>y :split<CR>
+nnoremap <leader>x :vnew<CR>
+nnoremap <leader>y :new<CR>
 
 nnoremap <A-k> <C-w>+
 nnoremap <A-j> <C-w>-
@@ -242,6 +250,17 @@ inoremap <silent><expr> <Tab>
             \ CheckBackspace() ? "\<Tab>" :
             \ coc#refresh()
 
+" Code complition next item
+inoremap <silent><expr> <C-j>
+            \ coc#pum#visible() ? coc#pum#next(1) :
+            \ CheckBackspace() ? "\<Tab>" :
+            \ coc#refresh()
+
+" Code complition prev item
+inoremap <silent><expr> <C-k> 
+      \ coc#pum#visible() ? coc#pum#prev(1) : "\<C-k>"
+
+
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
@@ -250,9 +269,11 @@ nnoremap cb :silent! Bdelete menu<CR>
 
 " Telescope
 nnoremap ff <cmd>Telescope find_files<CR>
-nnoremap fg <cmd>Telescope live_grep<CR>
+nnoremap fe <cmd>Telescope live_grep<CR>
 nnoremap fb <cmd>Telescope buffers<CR>
 nnoremap fp <cmd>Telescope jumplist<CR>
+nnoremap fp <cmd>Telescope registers<CR>
+nnoremap fh <cmd>Telescope help_tags<CR>
 
 " Git
 nnoremap fgs :silent! Telescope git_status<CR>
@@ -260,13 +281,10 @@ nnoremap fgc :silent! Telescope git_commits<CR>
 nnoremap fgb :silent! Telescope git_branches<CR>
 
 " Coc preview
-nnoremap <leader><leader> :silent! call CocAction('doHover')<CR>
+nnoremap <leader>q :silent! call CocAction('doHover')<CR>
 
 " Remap keys for applying codeAction to the current line
 nmap <leader>a  <Plug>(coc-codeaction)
-
-" Apply AutoFix to problem on the current line
-nmap <leader>q  <Plug>(coc-fix-current)
 
 " Go to code navigation
 nmap <silent> gd <Plug>(coc-definition)
@@ -285,7 +303,7 @@ nnoremap <silent> <leader>f :NvimTreeFindFile<CR>
 nnoremap ftd :TodoTelescope<Enter>
 
 " Tagbar setup
-nnoremap tb :TagbarToggle<Enter>
+nnoremap ftb :TagbarToggle<Enter>
 let g:tagbar_map_togglefold = ''
 let g:tagbar_map_jump = 'o'
 let g:tagbar_map_showproto = ''
