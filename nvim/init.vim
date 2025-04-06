@@ -38,8 +38,8 @@ Plug 'morhetz/gruvbox'
 Plug 'ryanoasis/vim-devicons'
 Plug 'vim-airline/vim-airline-themes'
 
-" Transparent vim
-Plug 'tribela/vim-transparent'
+" Transparency
+Plug 'tribela/transparent.nvim'
 
 " Coments support for vim
 Plug 'tpope/vim-commentary'
@@ -86,6 +86,7 @@ lua require('plugins.telescope')
 lua require('plugins.nvim-tree')
 lua require('plugins.auto-session')
 lua require('plugins.alpha-nvim')
+lua require('plugins.transparent')
 
 " Smart Tab
 set autoindent
@@ -101,17 +102,16 @@ set laststatus=3
 " Update time
 set updatetime=500
 
+" Terminal colors
+set t_Co=256
+
 " Theme
-colorscheme gruvbox-material
+colorscheme gruvbox
 set background=dark
 set termguicolors
 let g:airline_theme='gruvbox_material'
 let g:gruvbox_material_better_performance = 1
-let g:gruvbox_material_transparent_background = 2
 syntax enable
-
-" Terminal colors
-set t_Co=256
 
 " File type detection
 filetype plugin indent on
