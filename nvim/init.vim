@@ -1,5 +1,17 @@
 call plug#begin()
 
+" Color brackets
+Plug 'Yggdroot/hiPairs'
+
+" Indent lines
+Plug 'lukas-reineke/indent-blankline.nvim'
+
+" Custom hydra UIs
+Plug 'anuvyklack/hydra.nvim' 
+
+" Version control
+Plug 'mhinz/vim-signify'
+
 " Greeter
 Plug 'goolord/alpha-nvim'
 
@@ -22,13 +34,8 @@ Plug 'kyazdani42/nvim-web-devicons'
 
 " Git support
 Plug 'tpope/vim-fugitive'
+Plug 'FabijanZulj/blame.nvim'
 
-" Cursor
-Plug 'yamatsum/nvim-cursorline'
-
-" Tagbar
-Plug 'preservim/tagbar'
- 
 " Python language server
 Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
 
@@ -80,13 +87,30 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 call plug#end()
 
-"Lua plugins config
+" Autoread buffers
+set autoread
+set updatetime=1000
+augroup AutoRead
+  autocmd!
+  autocmd FocusGained,TermClose,TermLeave,BufEnter,CursorHold,CursorHoldI * checktime
+  autocmd FileChangedShellPost * echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+augroup END
+
+" Lua plugins config
 lua require('plugins.todo')
 lua require('plugins.telescope')
 lua require('plugins.nvim-tree')
 lua require('plugins.auto-session')
 lua require('plugins.alpha-nvim')
 lua require('plugins.transparent')
+lua require('plugins.ident-lines')
+lua require('plugins.blame-nvim')
+
+" Hydras 
+lua require('plugins.hydras.resize')
+
+" Redraw
+set nolazyredraw
 
 " Smart Tab
 set autoindent
@@ -104,6 +128,13 @@ set updatetime=500
 
 " Terminal colors
 set t_Co=256
+
+" Cursor highlight
+augroup CursorLine
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+augroup END
 
 " Theme
 colorscheme gruvbox
@@ -171,7 +202,7 @@ nnoremap <leader>] gt
 nnoremap <leader>[ gT
 
 " Coc extensions
-let g:coc_global_extensions = ['coc-pairs', 'coc-eslint', 'coc-json', 'coc-highlight', 'coc-tsserver', 'coc-snippets', 'coc-cssmodules', 'coc-css', 'coc-html', 'coc-yaml', 'coc-prettier', 'coc-rust-analyzer', 'coc-omnisharp']
+let g:coc_global_extensions = ['coc-pairs', 'coc-eslint', 'coc-json', 'coc-highlight', 'coc-tsserver', 'coc-snippets', 'coc-cssmodules', 'coc-css', 'coc-html', 'coc-yaml', 'coc-prettier', 'coc-rust-analyzer', 'coc-git', 'coc-sql', 'coc-jest']
 
 " Window menegment
 nnoremap <leader>h <C-w>h
@@ -186,11 +217,6 @@ tnoremap <leader>l <C-\><C-N><C-w>l
 
 nnoremap <leader>x :vnew<CR>
 nnoremap <leader>y :new<CR>
-
-nnoremap <A-k> <C-w>+
-nnoremap <A-j> <C-w>-
-nnoremap <A-l> <C-w>>
-nnoremap <A-h> <C-w><
 
 " Close window
 nnoremap <leader>d :close!<CR>
@@ -279,6 +305,7 @@ nnoremap fh <cmd>Telescope help_tags<CR>
 nnoremap fgs :silent! Telescope git_status<CR>
 nnoremap fgc :silent! Telescope git_commits<CR>
 nnoremap fgb :silent! Telescope git_branches<CR>
+nnoremap gb :silent! BlameToggle<CR>
 
 " Coc preview
 nnoremap <leader>q :silent! call CocAction('doHover')<CR>
@@ -296,6 +323,9 @@ nmap <leader>q :silent! call CocAction('doHover')<CR>
 nmap <silent> gp <C-o>
 nmap <silent> gn <C-i>
 
+" Coc rename
+nmap <leader>rn <Plug>(coc-rename)
+
 " Nvim-tree setup
 nnoremap <silent> <leader>f :NvimTreeFindFile<CR>
 
@@ -303,7 +333,7 @@ nnoremap <silent> <leader>f :NvimTreeFindFile<CR>
 nnoremap ftd :TodoTelescope<Enter>
 
 " Tagbar setup
-nnoremap ftb :TagbarToggle<Enter>
+nnoremap ftb :Telescope coc document_symbols<Enter>
 let g:tagbar_map_togglefold = ''
 let g:tagbar_map_jump = 'o'
 let g:tagbar_map_showproto = ''
@@ -321,3 +351,7 @@ nnoremap fs :SessionSearch<CR>
 
 " Word deletion
 inoremap <C-Backspace> <C-W>
+
+" Coc commands
+nnoremap cc :CocCommand<CR>
+nnoremap CC :CocCommand<CR>
